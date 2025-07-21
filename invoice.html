@@ -1,0 +1,1624 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Marble & Tiles Invoice System</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> -->
+
+    <style>
+     * {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+
+body {
+font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%);
+min-height: 100vh;
+color: #333;
+}
+ 
+
+/* Modern Navigation */
+.topnav {
+background: rgba(255, 255, 255, 0.95);
+backdrop-filter: blur(10px);
+box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+padding: 0;
+border-radius: 0 0 20px 20px;
+margin-bottom: 30px;
+position: sticky;
+top: 0;
+z-index: 1000;
+}
+
+.nav-container {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 0 30px;
+max-width: 1400px;
+margin: 0 auto;
+}
+
+.logo {
+font-size: 24px;
+font-weight: 700;
+color: #f4d03f;
+display: flex;
+align-items: center;
+gap: 10px;
+}
+
+.nav-links {
+display: flex;
+list-style: none;
+gap: 5px;
+}
+
+.nav-links a {
+text-decoration: none;
+color: #555;
+padding: 15px 20px;
+border-radius: 12px;
+transition: all 0.3s ease;
+font-weight: 500;
+display: flex;
+align-items: center;
+gap: 8px;
+}
+
+.nav-links a:hover {
+background: rgba(244, 208, 63, 0.1);
+color: #f4d03f;
+transform: translateY(-2px);
+}
+
+.nav-links a.active {
+background: linear-gradient(135deg, #2c2c2c, #1a1a1a);
+color: #f4d03f;
+box-shadow: 0 4px 15px rgba(244, 208, 63, 0.3);
+}
+
+/* Main Container */
+.main-container {
+max-width: 1400px;
+margin: 0 auto;
+padding: 0 30px;
+}
+
+/* Control Panel */
+.control-panel {
+background: rgba(255, 255, 255, 0.95);
+backdrop-filter: blur(10px);
+border-radius: 20px;
+padding: 30px;
+margin-bottom: 30px;
+box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.panel-header {
+display: flex;
+align-items: center;
+gap: 15px;
+margin-bottom: 25px;
+padding-bottom: 15px;
+border-bottom: 2px solid #f0f0f0;
+}
+
+.panel-header h2 {
+color: #333;
+font-size: 24px;
+font-weight: 600;
+}
+
+.panel-header i {
+color: #f4d03f;
+font-size: 28px;
+}
+
+.form-grid {
+display: grid;
+grid-template-columns: 1fr 2fr 1fr 1fr auto auto;
+gap: 20px;
+align-items: end;
+}
+
+.form-group {
+display: flex;
+flex-direction: column;
+}
+
+.form-group label {
+color: #555;
+font-weight: 600;
+margin-bottom: 8px;
+font-size: 14px;
+text-transform: uppercase;
+letter-spacing: 0.5px;
+}
+
+.modern-select,
+.modern-input {
+padding: 15px 20px;
+border: 2px solid #e1e5e9;
+border-radius: 12px;
+font-size: 16px;
+transition: all 0.3s ease;
+background: white;
+font-family: inherit;
+}
+
+.modern-select:focus,
+.modern-input:focus {
+outline: none;
+border-color: #f4d03f;
+box-shadow: 0 0 0 3px rgba(244, 208, 63, 0.1);
+transform: translateY(-2px);
+}
+
+.modern-select {
+cursor: pointer;
+appearance: none;
+background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+background-position: right 12px center;
+background-repeat: no-repeat;
+background-size: 16px;
+padding-right: 40px;
+}
+
+.btn-group {
+display: flex;
+gap: 10px;
+}
+
+.modern-btn {
+padding: 15px 25px;
+border: none;
+border-radius: 12px;
+font-size: 14px;
+font-weight: 600;
+cursor: pointer;
+transition: all 0.3s ease;
+display: flex;
+align-items: center;
+gap: 8px;
+text-transform: uppercase;
+letter-spacing: 0.5px;
+}
+
+.btn-primary {
+background: linear-gradient(135deg, #2c2c2c, #1a1a1a);
+color: #f4d03f;
+box-shadow: 0 4px 15px rgba(244, 208, 63, 0.3);
+}
+
+.btn-primary:hover {
+transform: translateY(-2px);
+box-shadow: 0 8px 25px rgba(244, 208, 63, 0.4);
+}
+
+.btn-secondary {
+background: linear-gradient(135deg, #f4d03f, #f1c40f);
+color: #1a1a1a;
+box-shadow: 0 4px 15px rgba(244, 208, 63, 0.3);
+}
+
+.btn-secondary:hover {
+transform: translateY(-2px);
+box-shadow: 0 8px 25px rgba(244, 208, 63, 0.4);
+}
+
+/* Invoice Container */
+#invoice {
+background: white;
+border-radius: 20px;
+box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+overflow: hidden;
+margin-bottom: 30px;
+}
+
+#container1 {
+border: none;
+}
+
+/* Invoice Header */
+.invoice-header {
+background: linear-gradient(135deg, #2c2c2c, #1a1a1a);
+color: white;
+text-align: center;
+padding: 40px;
+position: relative;
+overflow: hidden;
+}
+
+.invoice-header::before {
+content: '';
+position: absolute;
+top: -50%;
+left: -50%;
+width: 200%;
+height: 200%;
+background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+0%, 100% { transform: rotate(0deg); }
+50% { transform: rotate(180deg); }
+}
+
+.invoice-header h1 {
+font-size: 36px;
+font-weight: 700;
+margin: 0;
+text-transform: uppercase;
+letter-spacing: 2px;
+position: relative;
+z-index: 1;
+}
+
+/* Bill Info Section */
+.bill-info-section {
+background: #f8fafc;
+border-bottom: 1px solid #e2e8f0;
+padding: 25px 40px;
+}
+
+.bill-info-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 30px;
+}
+
+.info-card {
+background: white;
+padding: 20px;
+border-radius: 12px;
+box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+border-left: 4px solid #f4d03f;
+}
+
+.info-row {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 15px;
+}
+
+.info-row:last-child {
+margin-bottom: 0;
+}
+
+.info-label {
+font-weight: 600;
+color: #374151;
+font-size: 14px;
+text-transform: uppercase;
+letter-spacing: 0.5px;
+}
+
+.info-input {
+border: none;
+background: #f9fafb;
+padding: 8px 12px;
+border-radius: 8px;
+font-size: 16px;
+font-weight: 500;
+color: #1f2937;
+min-width: 120px;
+text-align: right;
+}
+
+.info-input:focus {
+outline: none;
+background: #fff;
+box-shadow: 0 0 0 2px rgba(244, 208, 63, 0.2);
+}
+
+/* Customer Info */
+.customer-info {
+padding: 25px 40px;
+background: white;
+border-bottom: 1px solid #e2e8f0;
+}
+
+.customer-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 30px;
+}
+
+.customer-field {
+display: flex;
+flex-direction: column;
+}
+
+.customer-field label {
+color: #374151;
+font-weight: 600;
+margin-bottom: 8px;
+font-size: 14px;
+text-transform: uppercase;
+letter-spacing: 0.5px;
+}
+
+.customer-field input {
+padding: 15px;
+border: 2px solid #e2e8f0;
+border-radius: 12px;
+font-size: 16px;
+transition: all 0.3s ease;
+}
+
+.customer-field input:focus {
+outline: none;
+border-color: #f4d03f;
+box-shadow: 0 0 0 3px rgba(244, 208, 63, 0.1);
+}
+
+/* Table Styles */
+.table-container {
+padding: 0 40px 25px;
+background: white;
+}
+
+table {
+width: 100%;
+border-collapse: separate;
+border-spacing: 0;
+border: none;
+margin-top: 20px;
+border-radius: 12px;
+overflow: hidden;
+box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+th {
+background: linear-gradient(135deg, #2c2c2c, #1a1a1a);
+color: white;
+padding: 20px 15px;
+text-align: center;
+font-weight: 600;
+font-size: 14px;
+text-transform: uppercase;
+letter-spacing: 0.5px;
+border: none;
+}
+
+th:first-child {
+border-radius: 12px 0 0 0;
+}
+
+th:last-child {
+border-radius: 0 12px 0 0;
+}
+
+td {
+padding: 15px;
+text-align: center;
+border-bottom: 1px solid #e2e8f0;
+background: white;
+transition: all 0.3s ease;
+}
+
+tbody tr:hover td {
+background: #f8fafc;
+}
+
+tbody tr:last-child td {
+border-bottom: none;
+}
+
+tbody tr:last-child td:first-child {
+border-radius: 0 0 0 12px;
+}
+
+tbody tr:last-child td:last-child {
+border-radius: 0 0 12px 0;
+}
+
+/* Total Section */
+.totals-section {
+padding: 25px 40px;
+background: #f8fafc;
+border-top: 1px solid #e2e8f0;
+}
+
+.totals-grid {
+display: grid;
+grid-template-columns: 1fr auto;
+gap: 30px;
+align-items: start;
+}
+
+.total-item {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 15px 25px;
+background: white;
+border-radius: 12px;
+margin-bottom: 10px;
+box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.total-item.main-total {
+background: linear-gradient(135deg, #2c2c2c, #1a1a1a);
+color: #f4d03f;
+font-size: 20px;
+font-weight: 700;
+box-shadow: 0 4px 20px rgba(244, 208, 63, 0.3);
+}
+
+.total-label {
+font-weight: 600;
+text-transform: uppercase;
+letter-spacing: 0.5px;
+}
+
+.total-value {
+font-weight: 700;
+font-size: 18px;
+}
+
+/* Action Buttons */
+.action-buttons {
+padding: 30px 40px;
+background: white;
+display: flex;
+gap: 20px;
+justify-content: center;
+flex-wrap: wrap;
+}
+
+.action-btn {
+padding: 15px 30px;
+border: none;
+border-radius: 12px;
+font-size: 16px;
+font-weight: 600;
+cursor: pointer;
+transition: all 0.3s ease;
+display: flex;
+align-items: center;
+gap: 10px;
+text-transform: uppercase;
+letter-spacing: 0.5px;
+min-width: 160px;
+justify-content: center;
+}
+
+.btn-print {
+background: linear-gradient(135deg, #2c2c2c, #1a1a1a);
+color: #f4d03f;
+box-shadow: 0 4px 15px rgba(244, 208, 63, 0.3);
+}
+
+.btn-save {
+background: linear-gradient(135deg, #f4d03f, #f1c40f);
+color: #1a1a1a;
+box-shadow: 0 4px 15px rgba(244, 208, 63, 0.3);
+}
+
+.btn-discount {
+background: linear-gradient(135deg, #f39c12, #e67e22);
+color: #1a1a1a;
+box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
+}
+
+.action-btn:hover {
+transform: translateY(-3px);
+box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Discount Message */
+#discountMessage {
+background: linear-gradient(135deg, #e74c3c, #c0392b);
+color: white;
+padding: 20px;
+border-radius: 12px;
+margin: 20px 40px;
+box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+display: none;
+}
+
+.discount-content {
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+
+.discount-label {
+font-weight: 600;
+text-transform: uppercase;
+letter-spacing: 0.5px;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+.form-grid {
+grid-template-columns: 1fr 1fr;
+gap: 15px;
+}
+
+.btn-group {
+grid-column: 1 / -1;
+justify-content: center;
+}
+}
+
+@media (max-width: 768px) {
+.main-container {
+padding: 0 15px;
+}
+
+.nav-container {
+flex-direction: column;
+padding: 20px 15px;
+}
+
+.nav-links {
+flex-wrap: wrap;
+justify-content: center;
+margin-top: 15px;
+}
+
+.form-grid {
+grid-template-columns: 1fr;
+}
+
+.bill-info-grid,
+.customer-grid {
+grid-template-columns: 1fr;
+gap: 20px;
+}
+
+.totals-grid {
+grid-template-columns: 1fr;
+gap: 20px;
+}
+
+.action-buttons {
+flex-direction: column;
+align-items: center;
+}
+
+.invoice-header h1 {
+font-size: 28px;
+}
+
+table {
+font-size: 14px;
+}
+
+th, td {
+padding: 10px 8px;
+}
+}
+
+/* Replace your existing @media print section (lines 603-634) with this: */
+@media print {
+body * {
+visibility: hidden;
+}
+
+#invoice,
+#invoice * {
+visibility: visible;
+}
+
+#invoice {
+position: absolute;
+left: 0;
+top: 0;
+background: white !important;
+box-shadow: none !important;
+border-radius: 0 !important;
+width: 100% !important;
+margin: 0 !important;
+}
+
+.control-panel,
+.action-buttons {
+display: none !important;
+}
+
+/* Professional Invoice Header for Print */
+.invoice-header {
+background: white !important;
+color: black !important;
+border: 2px solid #333 !important;
+padding: 20px !important;
+margin-bottom: 20px !important;
+}
+
+.invoice-header::before {
+display: none !important;
+}
+
+.invoice-header h1 {
+color: black !important;
+text-align: center !important;
+font-size: 28px !important;
+font-weight: bold !important;
+margin: 0 !important;
+}
+
+/* Professional Bill Info Section */
+.bill-info-section {
+background: white !important;
+padding: 15px !important;
+border: 1px solid #333 !important;
+margin-bottom: 15px !important;
+}
+
+.info-card {
+background: white !important;
+border: 1px solid #666 !important;
+box-shadow: none !important;
+margin-bottom: 10px !important;
+}
+
+.info-input {
+border: 1px solid #333 !important;
+background: white !important;
+padding: 5px !important;
+font-weight: bold !important;
+}
+
+/* Professional Customer Info */
+.customer-info {
+background: white !important;
+padding: 15px !important;
+border: 1px solid #333 !important;
+margin-bottom: 15px !important;
+}
+
+.customer-field input {
+border: 1px solid #333 !important;
+background: white !important;
+padding: 8px !important;
+font-weight: bold !important;
+}
+
+/* Professional Table Styling */
+.table-container {
+padding: 0 !important;
+background: white !important;
+margin-bottom: 15px !important;
+}
+
+table {
+width: 100% !important;
+border-collapse: collapse !important;
+border: 2px solid #333 !important;
+margin: 0 !important;
+border-radius: 0 !important;
+box-shadow: none !important;
+}
+
+th {
+background: white !important;
+color: black !important;
+padding: 12px 8px !important;
+text-align: center !important;
+font-weight: bold !important;
+font-size: 14px !important;
+border: 1px solid #333 !important;
+border-radius: 0 !important;
+}
+
+td {
+padding: 10px 8px !important;
+text-align: center !important;
+border: 1px solid #333 !important;
+background: white !important;
+font-size: 13px !important;
+border-radius: 0 !important;
+}
+
+tbody tr:hover td {
+background: white !important;
+}
+
+/* Professional Totals Section */
+.totals-section {
+padding: 15px !important;
+background: white !important;
+border: 2px solid #333 !important;
+margin-bottom: 15px !important;
+}
+
+.totals-grid {
+grid-template-columns: 1fr !important;
+gap: 10px !important;
+}
+
+.total-item {
+background: white !important;
+border: 1px solid #333 !important;
+box-shadow: none !important;
+padding: 10px 15px !important;
+}
+
+.total-item.main-total {
+background: white !important;
+color: black !important;
+border: 2px solid #333 !important;
+font-weight: bold !important;
+}
+
+/* Professional Discount Message */
+#discountMessage {
+background: white !important;
+color: black !important;
+border: 2px solid #333 !important;
+margin: 10px 0 !important;
+padding: 15px !important;
+box-shadow: none !important;
+}
+
+/* Remove any gradient backgrounds and ensure black text */
+* {
+background: white !important;
+color: black !important;
+-webkit-print-color-adjust: exact !important;
+print-color-adjust: exact !important;
+}
+
+/* Ensure proper spacing and margins */
+.main-container {
+padding: 0 !important;
+margin: 0 !important;
+}
+
+/* Font adjustments for print clarity */
+body {
+font-size: 13px !important;
+line-height: 1.4 !important;
+font-family: Arial, sans-serif !important;
+}
+
+.info-label,
+.customer-field label,
+.total-label {
+font-weight: bold !important;
+color: black !important;
+}
+}
+
+/* Loading Animation */
+.loading {
+opacity: 0.7;
+pointer-events: none;
+position: relative;
+}
+
+.loading::after {
+content: '';
+position: absolute;
+top: 50%;
+left: 50%;
+width: 30px;
+height: 30px;
+margin: -15px 0 0 -15px;
+border: 3px solid #f4d03f;
+border-radius: 50%;
+border-top-color: transparent;
+animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+to { transform: rotate(360deg); }
+}
+
+/* Hover Effects */
+.modern-input:hover,
+.modern-select:hover {
+border-color: #f4d03f;
+transform: translateY(-1px);
+}
+
+.total-item:hover {
+transform: translateY(-2px);
+box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Rough Calculator Styles */
+.rough-calculator {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.calculator-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.calculator-header h2 {
+    color: #333;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.calculator-header i {
+    color: #e74c3c;
+    font-size: 28px;
+}
+
+.calculator-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr auto;
+    gap: 20px;
+    align-items: end;
+    margin-bottom: 20px;
+}
+
+.calc-result {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+    margin-top: 20px;
+}
+
+.calc-result h3 {
+    margin: 0 0 10px 0;
+    font-size: 18px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.calc-values {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.calc-value {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.calc-value-label {
+    font-size: 12px;
+    opacity: 0.8;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.calc-value-amount {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.btn-calculate {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+    box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+}
+
+.btn-calculate:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
+}
+
+.action-btn {
+  background-color: #28a745; /* green */
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.action-btn:hover {
+  background-color: #218838;
+}
+
+.action-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.btn-save i {
+  font-size: 16px;
+}
+
+@media (max-width: 1200px) {
+    .calculator-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+    
+    .calculator-grid .modern-btn {
+        grid-column: 1 / -1;
+        justify-self: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .calculator-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .calc-values {
+        grid-template-columns: 1fr;
+    }
+}
+
+    </style>
+    <script type="module">
+        
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+ 
+ const firebaseConfig = {
+  apiKey: "AIzaSyAo42_4CTZlWn8iu0eVykEJ7HuoIAzHJGQ",
+  authDomain: "calculator-for-marbles.firebaseapp.com",
+  projectId: "calculator-for-marbles",
+  storageBucket: "calculator-for-marbles.firebasestorage.app",
+  messagingSenderId: "54611567694",
+  appId: "1:54611567694:web:23d28f8fd1c690bee2cf1f",
+  measurementId: "G-N1B33143RF"
+};
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+
+ onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    console.log("✅ User is logged in:", user.email);
+
+    const q = query(collection(db, `users/${user.uid}/invoices`));
+    const querySnapshot = await getDocs(q);
+
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      console.log("📄 Invoice:", data);
+
+      // If you want to show in HTML:
+      const summaryList = document.getElementById("invoiceList");
+      if (summaryList) {
+        const li = document.createElement("li");
+        li.textContent = `Bill: ${data.billNo}, ₹${data.total}, ${data.customerName}, ${data.date}`;
+        summaryList.appendChild(li);
+      }
+    });
+  } else {
+    console.log("❌ User not logged in");
+  }
+});
+
+
+
+  // Save data on button click
+ document.getElementById("saveToFirebaseButton").addEventListener("click", async () => {
+  const billNumber = document.getElementById('billNumber')?.value || "NA";
+  const totalAmount = document.getElementById('invoiceTotal')?.textContent || "0";
+  const customerName = document.getElementById('customerName')?.value || "Anonymous";
+  const date = document.getElementById('currentDate1')?.textContent || new Date().toLocaleDateString();
+
+  const data = {
+    billNo: billNumber,
+    total: totalAmount,
+    customerName,
+    date,
+    timestamp: new Date()
+  };
+
+  // ✅ REPLACE this part
+  try {
+    const user = auth.currentUser;
+    if (!user) {
+      alert("Please log in first.");
+      return;
+    }
+
+    const docRef = await addDoc(collection(db, `users/${user.uid}/invoices`), data);
+
+    alert("✅ Saved to Firebase!");
+  } catch (err) {
+    console.error("Error saving to Firebase:", err);
+    alert("❌ Failed to save. Check console.");
+  }
+});
+
+    </script>
+</head>
+
+<body>
+
+
+<div class="main-container">
+        <!-- Control Panel -->
+        <div class="control-panel">
+            <div class="panel-header">
+                <i class="fas fa-plus-circle"></i>
+                <h2>Add New Item</h2>
+            </div>
+            <div class="form-grid" id="addItem">
+                <div class="form-group">
+                    <label for="itemSelect">Product Type</label>
+                    <select id="itemSelect" class="modern-select">
+                        <option value="granite">Granite</option>
+                        <option value="marble">Marble</option>
+                        <option value="kadappa">Kadappa</option>
+                        <option value="molding">Molding</option>
+                        <option value="dp">DP</option>
+                        <option value="uncut granite">Uncut Granite</option>
+                        <option value="tiles">Tiles</option>
+                        <option value="sanitary">Sanitary</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <input type="text" id="description" placeholder="Enter dimensions or description" class="modern-input">
+                </div>
+                <div class="form-group">
+                    <label for="quantity">Quantity</label>
+                    <input type="number" id="quantity" placeholder="0" class="modern-input">
+                </div>
+                <div class="form-group">
+                    <label for="rate">Rate</label>
+                    <input type="number" id="rate" placeholder="0.00" class="modern-input">
+                </div>
+                <div class="btn-group">
+                    <button onclick="addItem()" class="modern-btn btn-primary">
+                        <i class="fas fa-plus"></i> Add Item
+                    </button>
+                    <button onclick="addExtraRow(); updateTotal();" class="modern-btn btn-secondary">
+                        <i class="fas fa-table"></i> Add Row
+                    </button>
+                </div>
+            </div>
+        </div>
+<!-- Rough Calculator -->
+<div class="rough-calculator">
+    <div class="calculator-header">
+        <i class="fas fa-calculator"></i>
+        <h2>Quick Price Calculator</h2>
+    </div>
+    <div class="calculator-grid">
+        <div class="form-group">
+            <label for="calcItemSelect">Product Type</label>
+            <select id="calcItemSelect" class="modern-select">
+                <option value="granite">Granite</option>
+                <option value="marble">Marble</option>
+                <option value="kadappa">Kadappa</option>
+                <option value="molding">Molding</option>
+                <option value="dp">DP</option>
+                <option value="uncut granite">Uncut Granite</option>
+                <option value="tiles">Tiles</option>
+                <option value="sanitary">Sanitary</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="calcDimensions">Dimensions</label>
+            <input type="text" id="calcDimensions" placeholder="Enter dimensions" class="modern-input">
+        </div>
+        <div class="form-group">
+            <label for="calcQuantity">Quantity</label>
+            <input type="number" id="calcQuantity" placeholder="1" value="1" class="modern-input">
+        </div>
+        <div class="form-group">
+            <label for="calcRate">Rate (₹)</label>
+            <input type="number" id="calcRate" placeholder="0.00" class="modern-input">
+        </div>
+        <div>
+            <button onclick="calculateRough()" class="modern-btn btn-calculate">
+                <i class="fas fa-calculator"></i> Calculate
+            </button>
+            <button onclick="resetRoughCalc()" class="modern-btn btn-secondary" style="margin-top: 10px;">
+                <i class="fas fa-undo"></i> Reset Totals
+            </button>
+        </div>
+    </div>
+
+    <div id="calcResult" class="calc-result" style="display: none;">
+        <h3>Calculation Result</h3>
+        <div class="calc-values">
+            <div class="calc-value">
+                <div class="calc-value-label">Square Feet (Total)</div>
+                <div class="calc-value-amount" id="calcSquareFeet">0.00</div>
+            </div>
+            <div class="calc-value">
+                <div class="calc-value-label">Total Price</div>
+                <div class="calc-value-amount">₹<span id="calcTotalPrice">0.00</span></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+        <!-- Invoice Container -->
+        <div id="invoice">
+            <div id="container1">
+                <!-- Invoice Header -->
+                <div class="invoice-header">
+                    <h1>Estimate Invoice</h1>
+                </div>
+
+                <!-- Bill Info Section -->
+                <div class="bill-info-section">
+                    <div class="bill-info-grid">
+                        <div class="info-card">
+                            <div class="info-row">
+                                <span class="info-label">Bill No:</span>
+                                <input type="text" id="billNumber" placeholder="Enter Bill No" class="info-input">
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Date:</span>
+                                <span id="currentDate1" style="font-weight: 500; color: #1f2937;"></span>
+                            </div>
+                        </div>
+                        <div class="info-card">
+                            <div class="info-row">
+                                <span class="info-label">Copy No:</span>
+                                <input type="text" placeholder="Copy No" class="info-input">
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Date:</span>
+                                <span id="currentDate2" style="font-weight: 500; color: #1f2937;"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Customer Info -->
+                <div class="customer-info">
+                    <div class="customer-grid">
+                        <div class="customer-field">
+                            <label for="customerName">Customer Name</label>
+                            <input type="text" id="customerName" placeholder="Enter customer name">
+                        </div>
+                        <div class="customer-field">
+                            <label for="mobileNumber">Mobile Number</label>
+                            <input type="text" id="mobileNumber" placeholder="Enter mobile number">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Table Container -->
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Sr.No.</th>
+                                <th>Name of Products / Services</th>
+                                <th>Quantity</th>
+                                <th>Rate</th>
+                                <th>Square Feet</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="invoiceItems">
+                            <!-- Items will be added dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Totals Section -->
+                <div class="totals-section">
+                    <div class="totals-grid">
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <div class="total-item">
+                                <span class="total-label">Square Feet Total:</span>
+                                <span class="total-value" id="invoiceSquareFeetTotal">0.00</span>
+                            </div>
+                        </div>
+                        <div class="total-item main-total">
+                            <span class="total-label">Total Amount:</span>
+                            <span class="total-value">₹<span id="invoiceTotal">0.00</span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Discount Message -->
+                <div id="discountMessage">
+                    <div class="discount-content">
+                        <span class="discount-label">Discount Applied: ₹<span id="appliedDiscount">0.00</span></span>
+                        <span id="invoiceDiscountedTotal" style="display: none;">0.00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button id="print-bill" class="action-btn btn-print">
+                <i class="fas fa-print"></i> Print Bill
+            </button>
+            <button id="applyDiscountButton" class="action-btn btn-discount">
+                <i class="fas fa-percentage"></i> Apply Discount
+            </button>
+          <button id="saveToFirebaseButton" class="action-btn btn-save">
+  <i class="fas fa-save"></i> Save Data
+</button>
+     
+        </div>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+       // Dummy data for demonstration
+       const invoiceData = {
+        invoiceNumber: 'INV001',
+        invoiceDate: '2023-12-25',
+        items: [],
+      };
+
+   // Add event listener to the new discount button
+   const applyDiscountButton = document.getElementById('applyDiscountButton');
+    applyDiscountButton.addEventListener('click', function () {
+      applyDiscount();
+    });
+
+    // Function to apply discount
+    function applyDiscount() {
+      const discountValue = parseFloat(prompt('Enter discount value in Rs:'));
+      if (!isNaN(discountValue)) {
+        const appliedDiscountContainer = document.getElementById('appliedDiscount');
+        const discountedTotalContainer = document.getElementById('invoiceDiscountedTotal');
+        const totalContainer = document.getElementById('invoiceTotal');
+        const total = parseFloat(totalContainer.textContent) || 0;
+
+        // Display the discount message
+        appliedDiscountContainer.textContent = discountValue.toFixed(2);
+        discountedTotalContainer.textContent = (total - discountValue).toFixed(2);
+        document.getElementById('discountMessage').style.display = 'block';
+
+        // Update the totalContainer with the discounted total
+        totalContainer.textContent = discountedTotalContainer.textContent;
+      } else {
+        alert('Please enter a valid discount value.');
+      }
+    }
+
+     // Auto-generate the current date and display it for the first section
+const currentDateElement1 = document.getElementById('currentDate1');
+const currentDate1 = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
+currentDateElement1.textContent = currentDate1;
+
+// Auto-generate the current date and display it for the second section
+const currentDateElement2 = document.getElementById('currentDate2');
+const currentDate2 = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
+currentDateElement2.textContent = currentDate2;
+
+      //Add event listener for the print button
+    const printButton = document.getElementById('print-bill');
+    printButton.addEventListener('click', function() {
+      window.print();
+    });
+
+    function renderInvoice() {
+  const invoiceItemsContainer = document.getElementById('invoiceItems');
+  const totalContainer = document.getElementById('invoiceTotal');
+  const squareFeetTotalContainer = document.getElementById('invoiceSquareFeetTotal'); // New line
+
+  // Clear existing items
+  invoiceItemsContainer.innerHTML = '';
+
+  // Recalculate total
+  let total = 0;
+  let sanitarySquareFeetTotal = 0; // Separate variable for 'sanitary' items
+  let otherSquareFeetTotal = 0;    // Separate variable for other items
+
+  // Add items to the invoice and calculate the total
+  invoiceData.items.forEach((item, index) => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${index + 1}</td>
+      <td>${item.item} (${item.description})</td>
+      <td>${item.quantity}</td>
+      <td>${item.rate}</td>
+      <td>${item.squareFeet}</td>
+      <td>${item.amount.toFixed(2)}</td>
+    `;
+    invoiceItemsContainer.appendChild(row);
+
+    total += item.amount;
+
+    // Separate the calculation of total square footage for 'sanitary' and other items
+    if (item.item.toLowerCase() === 'sanitary') {
+      sanitarySquareFeetTotal += item.squareFeet;
+    } else {
+      otherSquareFeetTotal += item.squareFeet;
+    }
+  });
+
+  // Update the total amount in the invoice
+  totalContainer.textContent = total.toFixed(2);
+
+  // Update the total square footage, considering only other items
+  squareFeetTotalContainer.textContent = otherSquareFeetTotal.toFixed(2);
+}
+
+      // Function to add items
+      window.addItem = function () {
+  const itemSelect = document.getElementById('itemSelect');
+  const descriptionInput = document.getElementById('description');
+  const quantityInput = document.getElementById('quantity');
+  const rateInput = document.getElementById('rate');
+
+  const newItem = {
+    item: itemSelect.value,
+    description: descriptionInput.value,
+    quantity: parseFloat(quantityInput.value),
+    rate: parseFloat(rateInput.value),
+  };
+
+  // Customize calculation based on the selected item
+  switch (newItem.item.toLowerCase()) {
+    case 'granite':
+      // Ensure length and breadth are rounded up to the next multiple of 3 for Granite
+      const dimensionsGranite = newItem.description.split('x').map(Number);
+      const roundedDimensionsGranite = dimensionsGranite.map(dimension => Math.ceil(dimension / 3) * 3);
+      // Calculate square feet for granite by considering quantity
+      newItem.squareFeet = (roundedDimensionsGranite.reduce((acc, val) => acc * val, 1)) / 144 * newItem.quantity;
+      break;
+    case 'kadappa':
+     // Ensure length and breadth are multiples of 6 for Kadappa
+     const dimensionsKadappa = newItem.description.split('x').map(Number);
+      const adjustedDimensionsKadappa = dimensionsKadappa.map(dimension => {
+        const multiple = 6;
+        const nextMultiple = Math.ceil(dimension / multiple) * multiple;
+        return nextMultiple === dimension ? nextMultiple + multiple : nextMultiple;
+      });
+      // Calculate square feet for Kadappa by considering quantity
+      newItem.squareFeet = (adjustedDimensionsKadappa.reduce((acc, val) => acc * val, 1)) / 144 * newItem.quantity;
+      break;
+      case 'molding':
+  // Assuming the first value is the length for molding
+  const lengthMolding = parseFloat(newItem.description.split('x')[0]);
+  const runningFeet = Math.ceil(lengthMolding / 12) * newItem.quantity; // Calculate running feet
+  newItem.squareFeet = runningFeet; // Each running foot is considered as 1 in square feet
+  break;
+
+  case 'marble':
+  // Ensure length and breadth are rounded up to the next multiple of 3 for Marble
+  const dimensionsMarble = newItem.description.split('x').map(Number);
+  const roundedDimensionsMarble = dimensionsMarble.map(dimension => Math.ceil(dimension / 3) * 3);
+  // Calculate square feet for marble by considering quantity
+  newItem.squareFeet = (roundedDimensionsMarble.reduce((acc, val) => acc * val, 1)) / 144 * newItem.quantity;
+  break;
+   
+  case 'dp':
+  // Ensure length and breadth are rounded up to the next multiple of 3 for DP
+  const dimensionsDP = newItem.description.split('x').map(Number);
+  const roundedDimensionsDP = dimensionsDP.map(dimension => Math.ceil(dimension / 3) * 3);
+  // Calculate square feet for DP by considering quantity
+  newItem.squareFeet = (roundedDimensionsDP.reduce((acc, val) => acc * val, 1)) / 144 * newItem.quantity;
+  break;
+
+  case 'uncut granite':
+  // Simple calculation for Uncut Granite: lengthxbredth/144xquantity = squarefeet
+  const dimensionsUncutGranite = newItem.description.split('x').map(Number);
+  // Calculate square feet for Uncut Granite by considering quantity and round to two decimal places
+  newItem.squareFeet = ((dimensionsUncutGranite.reduce((acc, val) => acc * val, 1)) / 144 * newItem.quantity).toFixed(2);
+  break;
+
+  case 'tiles':
+  // Simple calculation for Uncut Granite: lengthxbredth/144xquantity = squarefeet
+  const dimensionstiles = newItem.description.split('x').map(Number);
+  // Calculate square feet for Uncut Granite by considering quantity and round to two decimal places
+  newItem.squareFeet = ((dimensionstiles.reduce((acc, val) => acc * val, 1)) / 144 * newItem.quantity).toFixed(2);
+  break;
+
+  case 'sanitary':
+      // For sanitary, set square feet to 1 and calculate the amount based on quantity and rate only
+      newItem.squareFeet = 1;
+      break;
+
+    default:
+      // For other items, calculate square feet based on size (if available)
+      const dimensions = newItem.description.split('x').map(Number);
+      newItem.squareFeet = dimensions.reduce((acc, val) => acc * val, 1) / 144 || 1;
+
+      // For other cases, quantity should not be considered twice for amount calculation
+      newItem.quantity = 1;
+  }
+
+  // Set the product name including the description
+  newItem.productName = `${newItem.item} (${newItem.description})`;
+
+  // Calculate total for all items based on square feet and quantity
+  newItem.total = newItem.squareFeet;
+
+  // Calculate amount based on the square feet and rate, but only for the 'sanitary' case
+  newItem.amount = newItem.item.toLowerCase() === 'sanitary' ? newItem.rate * newItem.quantity : newItem.rate * newItem.squareFeet;
+
+  // Add the new item to the invoice data
+  invoiceData.items.push(newItem);
+
+  // Render the updated invoice
+  renderInvoice();
+
+   
+ 
+};
+
+
+});
+
+window.addExtraRow = function () {
+  const invoiceItemsContainer = document.getElementById('invoiceItems');
+
+  const row = document.createElement('tr');
+  row.innerHTML = `
+    <td contenteditable="true">New</td>
+    <td contenteditable="true">Row</td>
+    <td contenteditable="true" oninput="updateAmount(this)">1</td>
+    <td contenteditable="true" oninput="updateAmount(this)">0</td>
+    <td contenteditable="true">0.00</td>
+    <td contenteditable="true">0.00</td>
+  `;
+
+  invoiceItemsContainer.appendChild(row);
+};
+
+function updateAmount(input) {
+  const quantityCell = input.parentElement.querySelector('td:nth-child(3)');
+  const rateCell = input.parentElement.querySelector('td:nth-child(4)');
+  const amountCell = input.parentElement.querySelector('td:nth-child(6)');
+
+  const quantity = parseFloat(quantityCell.textContent) || 0;
+  const rate = parseFloat(rateCell.textContent) || 0;
+  const amount = quantity * rate;
+
+  amountCell.textContent = amount.toFixed(2);
+
+  // Update the total amount in the invoice for this row only
+  updateRowTotal(input.parentElement);
+
+  // Update the total amount in the invoice
+  updateTotal();
+}
+
+function updateRowTotal(row) {
+  const amountCell = row.querySelector('td:nth-child(6)');
+
+  const amount = parseFloat(amountCell.textContent) || 0;
+
+  // Update the total amount in the invoice for this row only
+  const totalContainer = document.getElementById('invoiceTotal');
+  let total = parseFloat(totalContainer.textContent) || 0;
+
+  // Subtract the previous amount and add the new amount
+  total = total - amount + parseFloat(amountCell.textContent);
+
+  totalContainer.textContent = total.toFixed(2);
+}
+
+function updateTotal() {
+  const invoiceItemsContainer = document.getElementById('invoiceItems');
+  const totalContainer = document.getElementById('invoiceTotal');
+
+  let total = 0;
+
+  // Update the total amount for the entire invoice
+  invoiceItemsContainer.querySelectorAll('tr').forEach((itemRow) => {
+    const amount = parseFloat(itemRow.querySelector('td:nth-child(6)').textContent) || 0;
+    total += amount;
+  });
+
+  // Update the total amount in the invoice
+  totalContainer.textContent = total.toFixed(2);
+}
+
+let totalSquareFeet = 0;
+let totalPrice = 0;
+
+function calculateRough() {
+    const itemType = document.getElementById('calcItemSelect').value;
+    const dimensions = document.getElementById('calcDimensions').value;
+    const quantity = parseFloat(document.getElementById('calcQuantity').value) || 1;
+    const rate = parseFloat(document.getElementById('calcRate').value) || 0;
+
+    if (!dimensions || rate === 0) {
+        alert('Please enter dimensions and rate');
+        return;
+    }
+
+    let squareFeet = 0;
+    let price = 0;
+
+    switch (itemType.toLowerCase()) {
+        case 'granite':
+            const graniteDims = dimensions.split('x').map(Number);
+            const roundedGranite = graniteDims.map(d => Math.ceil(d / 3) * 3);
+            squareFeet = (roundedGranite.reduce((a, b) => a * b, 1)) / 144 * quantity;
+            break;
+        case 'kadappa':
+            const kadappaDims = dimensions.split('x').map(Number);
+            const adjustedKadappa = kadappaDims.map(d => {
+                const multiple = 6;
+                const next = Math.ceil(d / multiple) * multiple;
+                return next === d ? next + multiple : next;
+            });
+            squareFeet = (adjustedKadappa.reduce((a, b) => a * b, 1)) / 144 * quantity;
+            break;
+        case 'molding':
+            const moldingLength = parseFloat(dimensions.split('x')[0]);
+            squareFeet = Math.ceil(moldingLength / 12) * quantity;
+            break;
+        case 'marble':
+            const marbleDims = dimensions.split('x').map(Number);
+            const roundedMarble = marbleDims.map(d => Math.ceil(d / 3) * 3);
+            squareFeet = (roundedMarble.reduce((a, b) => a * b, 1)) / 144 * quantity;
+            break;
+        case 'dp':
+            const dpDims = dimensions.split('x').map(Number);
+            const roundedDP = dpDims.map(d => Math.ceil(d / 3) * 3);
+            squareFeet = (roundedDP.reduce((a, b) => a * b, 1)) / 144 * quantity;
+            break;
+        case 'uncut granite':
+            const uncutDims = dimensions.split('x').map(Number);
+            squareFeet = (uncutDims.reduce((a, b) => a * b, 1)) / 144 * quantity;
+            break;
+        case 'tiles':
+            const tileDims = dimensions.split('x').map(Number);
+            squareFeet = (tileDims.reduce((a, b) => a * b, 1)) / 144 * quantity;
+            break;
+        case 'sanitary':
+            squareFeet = 1;
+            price = rate * quantity;
+            break;
+        default:
+            const defaultDims = dimensions.split('x').map(Number);
+            squareFeet = defaultDims.reduce((a, b) => a * b, 1) / 144 || 1;
+    }
+
+    if (itemType.toLowerCase() !== 'sanitary') {
+        price = rate * squareFeet;
+    }
+
+    // Accumulate totals
+    totalSquareFeet += squareFeet;
+    totalPrice += price;
+
+    // Update the UI
+    document.getElementById('calcSquareFeet').textContent = totalSquareFeet.toFixed(2);
+    document.getElementById('calcTotalPrice').textContent = totalPrice.toFixed(2);
+    document.getElementById('calcResult').style.display = 'block';
+}
+
+function resetRoughCalc() {
+    totalSquareFeet = 0;
+    totalPrice = 0;
+    document.getElementById('calcSquareFeet').textContent = '0.00';
+    document.getElementById('calcTotalPrice').textContent = '0.00';
+    document.getElementById('calcResult').style.display = 'none';
+}
+  
+  </script>
+</body>
+</html>
