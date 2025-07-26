@@ -6,15 +6,47 @@ const admin = require('firebase-admin');
 
 const app = express();
 
-// Middleware
-app.use(cors());
-app.use(express.json());
+// Enable trust proxy for Railway deployment
+app.set('trust proxy', 1);
+
+// Enhanced CORS configuration
+app.use(cors({
+    origin: [
+        'https://hackeitbro.github.io',
+        'http://localhost:3000',
+        'http://127.0.0.1:3000',
+        'http://localhost:5500',
+        'http://127.0.0.1:5500'
+    ],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+    credentials: true
+}));
+
+// Body parsing middleware
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Add request logging middleware
+app.use((req, res, next) => {
+    console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`, {
+        headers: req.headers,
+        body: req.method === 'POST' ? req.body : 'N/A'
+    });
+    next();
+});
 
 // Initialize Firebase Admin (add your service account key)
-const serviceAccount = require('./firebase-service-account.json');
-admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
-});
+try {
+    const serviceAccount = require('./firebase-service-account.json');
+    admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount)
+    });
+    console.log('✅ Firebase Admin initialized successfully');
+} catch (error) {
+    console.error('❌ Firebase Admin initialization failed:', error);
+    console.log('⚠️ Make sure firebase-service-account.json exists and is valid');
+}
 
 // Initialize Razorpay with LIVE credentials
 const razorpay = new Razorpay({
@@ -27,40 +59,83 @@ console.log('✅ Razorpay LIVE mode initialized with key:', 'rzp_live_nkszfAsN6g
 // Middleware to verify Firebase token
 const verifyFirebaseToken = async (req, res, next) => {
     try {
-        const token = req.headers.authorization?.split('Bearer ')[1];
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            console.log('❌ No valid authorization header found');
+            return res.status(401).json({ error: 'No token provided' });
+        }
+
+        const token = authHeader.split('Bearer ')[1];
         if (!token) {
+            console.log('❌ No token found in authorization header');
             return res.status(401).json({ error: 'No token provided' });
         }
 
         const decodedToken = await admin.auth().verifyIdToken(token);
         req.user = decodedToken;
+        console.log('✅ Token verified for user:', decodedToken.uid);
         next();
     } catch (error) {
-        console.error('Token verification error:', error);
-        res.status(401).json({ error: 'Invalid token' });
+        console.error('❌ Token verification error:', error);
+        res.status(401).json({ 
+            error: 'Invalid token',
+            details: error.message 
+        });
     }
 };
+
+// Health check endpoint - MUST BE FIRST
+app.get('/api/health', (req, res) => {
+    res.json({
+        status: 'healthy',
+        timestamp: new Date().toISOString(),
+        razorpay: 'LIVE MODE CONNECTED',
+        mode: 'LIVE',
+        environment: process.env.NODE_ENV || 'production'
+    });
+});
+
+// Test endpoint to verify live credentials - MUST BE SECOND
+app.get('/api/test-live', (req, res) => {
+    console.log('📋 Test endpoint called');
+    res.json({
+        message: 'Live mode backend is running',
+        keyId: 'rzp_live_nkszfAsN6gyszW',
+        mode: 'LIVE',
+        timestamp: new Date().toISOString(),
+        status: 'success'
+    });
+});
 
 // Create Razorpay Order
 app.post('/api/create-subscription-order', verifyFirebaseToken, async (req, res) => {
     try {
+        console.log('📝 Creating subscription order...');
         const { planName, amount, currency = 'INR', userId, userEmail } = req.body;
 
         // Validate input
         if (!planName || !amount || !userId || !userEmail) {
-            return res.status(400).json({ error: 'Missing required fields' });
+            console.log('❌ Missing required fields:', { planName, amount, userId, userEmail });
+            return res.status(400).json({ 
+                error: 'Missing required fields',
+                required: ['planName', 'amount', 'userId', 'userEmail']
+            });
         }
 
         // Verify user matches token
         if (req.user.uid !== userId) {
+            console.log('❌ User ID mismatch:', { 
+                tokenUid: req.user.uid, 
+                bodyUserId: userId 
+            });
             return res.status(403).json({ error: 'User ID mismatch' });
         }
 
-        // ADD THIS NEW CODE HERE:
-// Test mode validation - ensure amount is 1 rupee (100 paise)
-if (amount !== 100) {
-    console.log('⚠️ TEST MODE: Expected amount 100 paise (₹1), received:', amount);
-}
+        // Test mode validation - ensure amount is 1 rupee (100 paise)
+        if (amount !== 100) {
+            console.log('⚠️ TEST MODE: Expected amount 100 paise (₹1), received:', amount);
+        }
+
         // Create Razorpay order
         const orderOptions = {
             amount: parseInt(amount), // Amount in paise
@@ -75,15 +150,18 @@ if (amount !== 100) {
             }
         };
 
+        console.log('💳 Creating Razorpay order with options:', orderOptions);
+
         const order = await razorpay.orders.create(orderOptions);
 
-        console.log('✅ LIVE Order created:', order.id);
+        console.log('✅ LIVE Order created successfully:', order.id);
 
         res.json({
             success: true,
             orderId: order.id,
             amount: order.amount,
-            currency: order.currency
+            currency: order.currency,
+            mode: 'LIVE'
         });
 
     } catch (error) {
@@ -91,7 +169,8 @@ if (amount !== 100) {
         res.status(500).json({
             success: false,
             error: 'Failed to create order',
-            details: error.message
+            details: error.message,
+            mode: 'LIVE'
         });
     }
 });
@@ -99,6 +178,7 @@ if (amount !== 100) {
 // Verify Payment
 app.post('/api/verify-payment', verifyFirebaseToken, async (req, res) => {
     try {
+        console.log('🔍 Verifying payment...');
         const {
             razorpay_order_id,
             razorpay_payment_id,
@@ -121,13 +201,23 @@ app.post('/api/verify-payment', verifyFirebaseToken, async (req, res) => {
 
         // Validate input
         if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
-            console.log('❌ Missing payment details:', { razorpay_order_id, razorpay_payment_id, razorpay_signature });
-            return res.status(400).json({ error: 'Missing payment details' });
+            console.log('❌ Missing payment details:', { 
+                razorpay_order_id: !!razorpay_order_id, 
+                razorpay_payment_id: !!razorpay_payment_id, 
+                razorpay_signature: !!razorpay_signature 
+            });
+            return res.status(400).json({ 
+                error: 'Missing payment details',
+                required: ['razorpay_order_id', 'razorpay_payment_id', 'razorpay_signature']
+            });
         }
 
         // Verify user matches token
         if (req.user.uid !== userId) {
-            console.log('❌ User ID mismatch:', { tokenUid: req.user.uid, bodyUserId: userId });
+            console.log('❌ User ID mismatch:', { 
+                tokenUid: req.user.uid, 
+                bodyUserId: userId 
+            });
             return res.status(403).json({ error: 'User ID mismatch' });
         }
 
@@ -183,6 +273,7 @@ app.post('/api/verify-payment', verifyFirebaseToken, async (req, res) => {
 // Webhook endpoint for Razorpay events
 app.post('/api/razorpay-webhook', express.raw({ type: 'application/json' }), (req, res) => {
     try {
+        console.log('📧 Webhook received');
         const secret = process.env.RAZORPAY_WEBHOOK_SECRET || 'your_webhook_secret';
         const signature = req.headers['x-razorpay-signature'];
 
@@ -213,6 +304,7 @@ app.post('/api/razorpay-webhook', express.raw({ type: 'application/json' }), (re
 
             res.status(200).json({ received: true });
         } else {
+            console.warn('❌ Invalid webhook signature');
             res.status(400).json({ error: 'Invalid webhook signature' });
         }
 
@@ -247,23 +339,21 @@ app.get('/api/validate-subscription/:userId', verifyFirebaseToken, async (req, r
     }
 });
 
-// Health check endpoint
-app.get('/api/health', (req, res) => {
-    res.json({
-        status: 'healthy',
-        timestamp: new Date().toISOString(),
-        razorpay: 'LIVE MODE CONNECTED',
-        mode: 'LIVE'
-    });
-});
-
-// Test endpoint to verify live credentials
-app.get('/api/test-live', (req, res) => {
-    res.json({
-        message: 'Live mode backend is running',
-        keyId: 'rzp_live_nkszfAsN6gyszW',
-        mode: 'LIVE',
-        timestamp: new Date().toISOString()
+// Catch-all route for undefined endpoints
+app.use('*', (req, res) => {
+    console.log(`❌ 404 - Route not found: ${req.method} ${req.originalUrl}`);
+    res.status(404).json({
+        error: 'Endpoint not found',
+        method: req.method,
+        path: req.originalUrl,
+        availableEndpoints: [
+            'GET /api/health',
+            'GET /api/test-live',
+            'POST /api/create-subscription-order',
+            'POST /api/verify-payment',
+            'POST /api/razorpay-webhook',
+            'GET /api/validate-subscription/:userId'
+        ]
     });
 });
 
@@ -273,16 +363,23 @@ app.use((error, req, res, next) => {
     res.status(500).json({
         error: 'Internal server error',
         message: error.message,
-        mode: 'LIVE'
+        mode: 'LIVE',
+        timestamp: new Date().toISOString()
     });
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}`);
+    console.log(`🌐 Server URL: http://localhost:${PORT}`);
     console.log('💳 Razorpay LIVE MODE integration ready!');
     console.log('🔑 Using Live Key ID: rzp_live_nkszfAsN6gyszW');
     console.log('⚠️  WARNING: LIVE MODE - Real money transactions enabled!');
+    console.log('📋 Available endpoints:');
+    console.log('  - GET /api/health');
+    console.log('  - GET /api/test-live');
+    console.log('  - POST /api/create-subscription-order');
+    console.log('  - POST /api/verify-payment');
 });
 
 module.exports = app;
