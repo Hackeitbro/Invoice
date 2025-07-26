@@ -1,212 +1,987 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Invoice Login</title>
-  <style>
-    body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    margin: 0;
-    overflow: hidden;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Pro - Live Payment System</title>
+    <style>
+        /* Your existing CSS styles remain the same */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-.login-box {
-    background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
-    padding: 40px;
-    box-shadow: 
-        0 20px 40px rgba(0,0,0,0.3),
-        0 0 0 1px rgba(255,193,7,0.2);
-    border-radius: 12px;
-    width: 320px;
-    border: 2px solid #ffc107;
-    position: relative;
-    overflow: hidden;
-}
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
 
-.login-box::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, #ffc107, #ffca28, #ffc107);
-}
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            padding: 20px;
+        }
 
-.login-box h2 {
-    color: #1a1a1a;
-    text-align: center;
-    margin-bottom: 30px;
-    font-size: 28px;
-    font-weight: 600;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-}
+        .auth-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            width: 400px;
+            margin: 0 auto;
+            position: relative;
+        }
 
-input {
-    width: 100%;
-    padding: 15px;
-    margin-top: 15px;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
-    font-size: 16px;
-    transition: all 0.3s ease;
-    background: #ffffff;
-    color: #1a1a1a;
-    box-sizing: border-box;
-}
+        .auth-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
 
-input:focus {
-    outline: none;
-    border-color: #ffc107;
-    box-shadow: 0 0 10px rgba(255,193,7,0.3);
-    transform: translateY(-2px);
-}
+        .auth-header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
 
-input::placeholder {
-    color: #666666;
-    font-weight: 400;
-}
+        .auth-header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
 
-button {
-    margin-top: 25px;
-    width: 100%;
-    padding: 15px;
-    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-    color: #ffffff;
-    border: 2px solid #ffc107;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
+        .auth-body {
+            padding: 40px;
+        }
 
-button::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,193,7,0.2), transparent);
-    transition: left 0.5s;
-}
+        .form-group {
+            margin-bottom: 25px;
+        }
 
-button:hover {
-    background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
-    border-color: #ffca28;
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(255,193,7,0.4);
-}
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
 
-button:hover::before {
-    left: 100%;
-}
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
 
-button:active {
-    transform: translateY(-1px);
-}
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
 
-.error {
-    color: #dc3545;
-    margin-top: 15px;
-    text-align: center;
-    font-weight: 500;
-    padding: 10px;
-    background: rgba(220,53,69,0.1);
-    border-radius: 6px;
-    border-left: 4px solid #dc3545;
-    display: none;
-}
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
 
-.error:not(:empty) {
-    display: block;
-    animation: slideIn 0.3s ease;
-}
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
 
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+        }
 
-/* Professional loading state */
-button:disabled {
-    background: #6c757d;
-    border-color: #6c757d;
-    cursor: not-allowed;
-    transform: none;
-}
+        .btn-secondary {
+            background: transparent;
+            color: #667eea;
+            border: 2px solid #667eea;
+            margin-top: 15px;
+        }
 
-/* Responsive design */
-@media (max-width: 480px) {
-    .login-box {
-        width: 90%;
-        margin: 20px;
-        padding: 30px;
-    }
-}
-  </style>
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .error {
+            background: #fee;
+            color: #c33;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #c33;
+            display: none;
+        }
+
+        .success {
+            background: #efe;
+            color: #3c3;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #3c3;
+            display: none;
+        }
+
+        .toggle-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #667eea;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .subscription-container {
+            display: none;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .subscription-header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+
+        .subscription-header h1 {
+            font-size: 42px;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .subscription-header p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .plans-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .plan-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .plan-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        .plan-card.popular {
+            border: 3px solid #667eea;
+            transform: scale(1.05);
+        }
+
+        .plan-card.popular::before {
+            content: 'Most Popular';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .plan-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .plan-price {
+            font-size: 48px;
+            font-weight: 800;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .plan-period {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .plan-features {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+
+        .plan-features li {
+            padding: 8px 0;
+            color: #555;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .plan-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .btn-plan {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-plan:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .live-mode-indicator {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: #ff4757;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 1000;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+    </style>
 </head>
 <body>
-  <div class="login-box">
-    <h2>Login</h2>
-    <input type="email" id="email" placeholder="Email" required>
-    <input type="password" id="password" placeholder="Password" required>
-    <button onclick="login()">Login</button>
-    <div class="error" id="errorMsg"></div>
-  </div>
+    <!-- Live Mode Indicator -->
+    <div class="live-mode-indicator">🔴 LIVE MODE</div>
 
-  <!-- ✅ Firebase JS SDKs (v9+) -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+    <div class="container">
+        <!-- Login/Signup Form -->
+        <div class="auth-container" id="authContainer">
+            <div class="auth-header">
+                <h1 id="authTitle">Welcome Back</h1>
+                <p id="authSubtitle">Sign in to your account</p>
+            </div>
+            <div class="auth-body">
+                <div class="error" id="errorMsg"></div>
+                <div class="success" id="successMsg"></div>
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Processing...</p>
+                </div>
 
-    // ✅ Replace this with your Firebase project config
-   
- const firebaseConfig = {
-  apiKey: "AIzaSyAo42_4CTZlWn8iu0eVykEJ7HuoIAzHJGQ",
-  authDomain: "calculator-for-marbles.firebaseapp.com",
-  projectId: "calculator-for-marbles",
-  storageBucket: "calculator-for-marbles.firebasestorage.app",
-  messagingSenderId: "54611567694",
-  appId: "1:54611567694:web:23d28f8fd1c690bee2cf1f",
-  measurementId: "G-N1B33143RF"
-};
+                <form id="authForm">
+                    <div class="form-group" id="nameGroup" style="display: none;">
+                        <label for="fullName">Full Name</label>
+                        <input type="text" id="fullName" placeholder="Enter your full name">
+                    </div>
 
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" placeholder="Enter your email" required>
+                    </div>
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" placeholder="Enter your password" required>
+                    </div>
 
-    // 🔐 Login function
-    window.login = async function () {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      const errorMsg = document.getElementById("errorMsg");
-      errorMsg.textContent = "";
+                    <div class="form-group" id="confirmPasswordGroup" style="display: none;">
+                        <label for="confirmPassword">Confirm Password</label>
+                        <input type="password" id="confirmPassword" placeholder="Confirm your password">
+                    </div>
 
-      try {
-        await signInWithEmailAndPassword(auth, email, password);
-        window.location.href = "invoice.html"; // ✅ Redirect after login
-      } catch (error) {
-        errorMsg.textContent = error.message;
-      }
-    }
-  </script>
+                    <button type="submit" class="btn btn-primary" id="authBtn">Sign In</button>
+
+                    <div id="forgotPasswordLink" style="text-align: center; margin: 15px 0;">
+                        <span style="color: #667eea; cursor: pointer; text-decoration: underline;" onclick="resetPassword()">Forgot Password?</span>
+                    </div>
+
+                    <button type="button" class="btn btn-secondary" id="toggleAuth">Create New Account</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Subscription Plans -->
+        <div class="subscription-container" id="subscriptionContainer">
+            <div class="subscription-header">
+                <h1>Choose Your Plan - Live Payment</h1>
+                <p>Select the perfect plan for your business needs</p>
+            </div>
+
+            <div class="plans-grid">
+                <div class="plan-card popular">
+                    <div class="plan-name">Premium Plan</div>
+                    <div class="plan-price">₹1</div>
+                    <div class="plan-period"><span style="text-decoration: line-through; color: #999;">₹1</span> Lifetime Access(Test)</div>
+                    <ul class="plan-features">
+                        <li>Unlimited Invoices</li>
+                        <li>All Premium Templates</li>
+                        <li>Priority Email & Chat Support</li>
+                        <li>Custom Branding</li>
+                        <li>Advanced Analytics</li>
+                        <li>Full API Access</li>
+                    </ul>
+                    <button class="btn-plan" onclick="selectPlan('premium', 1, 'lifetime')">Choose Plan - Live Payment (₹1 TEST)</button>
+                </div>
+            </div>
+
+            <div class="back-to-login">
+                <button onclick="showLogin()">← Back to Login</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Razorpay Script -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <!-- EmailJS -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+    <!-- Firebase Configuration -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAo42_4CTZlWn8iu0eVykEJ7HuoIAzHJGQ",
+            authDomain: "calculator-for-marbles.firebaseapp.com",
+            projectId: "calculator-for-marbles",
+            storageBucket: "calculator-for-marbles.firebasestorage.app",
+            messagingSenderId: "54611567694",
+            appId: "1:54611567694:web:23d28f8fd1c690bee2cf1f",
+            measurementId: "G-N1B33143RF"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // ⚡ LIVE MODE CONFIGURATION ⚡
+        const RAZORPAY_KEY_ID = 'rzp_live_nkszfAsN6gyszW'; // Your LIVE key
+        const BACKEND_URL = 'https://hackeitbro.github.io/Invoice'; // Your backend URL
+
+        console.log('🔴 LIVE MODE INITIALIZED');
+        console.log('💳 Razorpay Live Key:', RAZORPAY_KEY_ID);
+        console.log('🌐 Backend URL:', BACKEND_URL);
+
+        let isLogin = true;
+        let currentUser = null;
+
+        // EmailJS Configuration
+        emailjs.init("mmCkI74KBr2AF8pkK");
+        const EMAILJS_SERVICE_ID = "service_r9md3kj";
+        const EMAILJS_TEMPLATE_ID = "template_fnjgcff";
+
+        // DOM Elements
+        const authContainer = document.getElementById('authContainer');
+        const subscriptionContainer = document.getElementById('subscriptionContainer');
+        const authTitle = document.getElementById('authTitle');
+        const authSubtitle = document.getElementById('authSubtitle');
+        const authBtn = document.getElementById('authBtn');
+        const toggleAuth = document.getElementById('toggleAuth');
+        const nameGroup = document.getElementById('nameGroup');
+        const confirmPasswordGroup = document.getElementById('confirmPasswordGroup');
+        const errorMsg = document.getElementById('errorMsg');
+        const successMsg = document.getElementById('successMsg');
+        const loading = document.getElementById('loading');
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                console.log('✅ User authenticated:', user.uid);
+                showLogin();
+            } else {
+                currentUser = null;
+                showLogin();
+            }
+        });
+
+        // Toggle between login and signup
+        window.toggleAuthMode = function() {
+            isLogin = !isLogin;
+
+            if (isLogin) {
+                authTitle.textContent = 'Welcome Back';
+                authSubtitle.textContent = 'Sign in to your account';
+                authBtn.textContent = 'Sign In';
+                toggleAuth.textContent = 'Create New Account';
+                nameGroup.style.display = 'none';
+                confirmPasswordGroup.style.display = 'none';
+                document.getElementById('forgotPasswordLink').style.display = 'block';
+            } else {
+                authTitle.textContent = 'Create Account';
+                authSubtitle.textContent = 'Join Invoice Pro today';
+                authBtn.textContent = 'Sign Up';
+                toggleAuth.textContent = 'Back to Login';
+                nameGroup.style.display = 'block';
+                confirmPasswordGroup.style.display = 'block';
+                document.getElementById('forgotPasswordLink').style.display = 'none';
+            }
+
+            clearMessages();
+            document.getElementById('email').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('fullName').value = '';
+            document.getElementById('confirmPassword').value = '';
+        };
+
+        // Password reset function
+        window.resetPassword = async function() {
+            const email = document.getElementById('email').value.trim();
+
+            if (!email) {
+                showError('Please enter your email address first');
+                return;
+            }
+
+            showLoading(true);
+
+            try {
+                await sendPasswordResetEmail(auth, email);
+                showSuccess('Password reset email sent! Check your inbox.');
+            } catch (error) {
+                console.error('Password reset error:', error);
+                let errorMessage = 'Failed to send password reset email.';
+                if (error.code === 'auth/user-not-found') {
+                    errorMessage = 'No account found with this email address.';
+                } else if (error.code === 'auth/invalid-email') {
+                    errorMessage = 'Please enter a valid email address.';
+                }
+                showError(errorMessage);
+            }
+            showLoading(false);
+        };
+
+        // Form submission
+        document.getElementById('authForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            clearMessages();
+
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            if (!email || !password) {
+                showError('Please fill in all required fields');
+                return;
+            }
+
+            if (!isLogin) {
+                const fullName = document.getElementById('fullName').value.trim();
+                const confirmPassword = document.getElementById('confirmPassword').value;
+
+                if (!fullName) {
+                    showError('Please enter your full name');
+                    return;
+                }
+
+                if (fullName.length < 2) {
+                    showError('Full name must be at least 2 characters long');
+                    return;
+                }
+
+                if (password.length < 6) {
+                    showError('Password must be at least 6 characters long');
+                    return;
+                }
+
+                if (password !== confirmPassword) {
+                    showError('Passwords do not match');
+                    return;
+                }
+            }
+
+            showLoading(true);
+
+            try {
+                if (isLogin) {
+                    console.log('🔐 Attempting login with:', email);
+                    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                    console.log('✅ Login successful:', userCredential.user.uid);
+                    showSuccess('Login successful! Redirecting...');
+
+                    setTimeout(async () => {
+                        showLoading(false);
+
+                        try {
+                            const userDoc = await getDoc(doc(db, 'users', userCredential.user.uid));
+                            if (userDoc.exists()) {
+                                const userData = userDoc.data();
+                                if (userData.hasSubscription && userData.paymentId) {
+                                    showSuccess('Login successful! Redirecting to Invoice Dashboard...');
+                                    setTimeout(() => {
+                                        window.location.href = 'invoice.html';
+                                    }, 1500);
+                                    return;
+                                } else {
+                                    showSuccess('Login successful! Please choose a subscription plan...');
+                                    setTimeout(() => {
+                                        showSubscriptions();
+                                    }, 1500);
+                                }
+                            } else {
+                                showSuccess('Login successful! Please choose a subscription plan...');
+                                setTimeout(() => {
+                                    showSubscriptions();
+                                }, 1500);
+                            }
+                        } catch (err) {
+                            console.error('Error fetching user doc after login:', err);
+                            showSubscriptions();
+                        }
+                    }, 1500);
+
+                } else {
+                    console.log('📝 Attempting signup with:', email);
+                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                    const user = userCredential.user;
+                    console.log('✅ Signup successful:', user.uid);
+
+                    await setDoc(doc(db, 'users', user.uid), {
+                        fullName: document.getElementById('fullName').value.trim(),
+                        email: email,
+                        hasSubscription: false,
+                        createdAt: new Date()
+                    });
+
+                    showSuccess('Account created successfully! Redirecting to subscription plans...');
+
+                    setTimeout(() => {
+                        showLoading(false);
+                        showSubscriptions();
+                    }, 1500);
+                }
+            } catch (error) {
+                console.error('❌ Authentication error:', error);
+
+                let errorMessage = 'An error occurred. Please try again.';
+
+                switch (error.code) {
+                    case 'auth/user-not-found':
+                        errorMessage = 'No account found with this email address.';
+                        break;
+                    case 'auth/wrong-password':
+                        errorMessage = 'Incorrect password. Please try again.';
+                        break;
+                    case 'auth/invalid-email':
+                        errorMessage = 'Please enter a valid email address.';
+                        break;
+                    case 'auth/user-disabled':
+                        errorMessage = 'This account has been disabled.';
+                        break;
+                    case 'auth/email-already-in-use':
+                        errorMessage = 'An account with this email already exists.';
+                        break;
+                    case 'auth/weak-password':
+                        errorMessage = 'Password should be at least 6 characters long.';
+                        break;
+                    case 'auth/invalid-login-credentials':
+                        errorMessage = 'Invalid email or password. Please check your credentials and try again.';
+                        break;
+                    case 'auth/too-many-requests':
+                        errorMessage = 'Too many failed attempts. Please try again later.';
+                        break;
+                    default:
+                        errorMessage = error.message;
+                }
+
+                showError(errorMessage);
+            }
+
+            showLoading(false);
+        });
+
+        // ⚡ LIVE MODE PAYMENT PROCESSING ⚡
+        window.selectPlan = async function(planName, price, duration) {
+            if (!currentUser) {
+                showError('Please login first to subscribe');
+                return;
+            }
+
+            showLoading(true);
+            console.log('🔴 LIVE PAYMENT: Initiating payment for', { planName, price, duration });
+
+            try {
+                // Step 1: Create order on backend
+                const orderResponse = await fetch(`${BACKEND_URL}/api/create-subscription-order`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${await currentUser.getIdToken()}`
+                    },
+                    body: JSON.stringify({
+                        planName: planName,
+                        amount: price * 100, // Amount in paise
+                        currency: 'INR',
+                        userId: currentUser.uid,
+                        userEmail: currentUser.email
+                    })
+                });
+
+                if (!orderResponse.ok) {
+                    const errorData = await orderResponse.json();
+                    console.error('❌ Order creation failed:', errorData);
+                    throw new Error(`Failed to create order: ${errorData.error || 'Unknown error'}`);
+                }
+
+                const orderData = await orderResponse.json();
+                console.log('✅ LIVE Order created:', orderData.orderId);
+                showLoading(false);
+
+                // Step 2: Initialize Razorpay with LIVE credentials
+                const razorpayOptions = {
+                    key: RAZORPAY_KEY_ID, // LIVE KEY
+                    amount: price * 100,
+                    currency: 'INR',
+                    name: 'Invoice Pro',
+                    description: `${planName} Plan - ${duration} (LIVE)`,
+                    order_id: orderData.orderId,
+                    handler: async function(response) {
+                        console.log('💳 LIVE Payment completed:', response.razorpay_payment_id);
+                        await verifyPayment(response, planName, price, duration);
+                    },
+                    prefill: {
+                        name: currentUser.displayName || 'User',
+                        email: currentUser.email,
+                        contact: ''
+                    },
+                    notes: {
+                        planName: planName,
+                        userId: currentUser.uid,
+                        duration: duration,
+                        environment: 'LIVE',
+                        mode: 'production'
+                    },
+                    theme: {
+                        color: '#667eea'
+                    },
+                    modal: {
+                        ondismiss: function() {
+                            console.log('💸 LIVE Payment cancelled by user');
+                            showError('Payment cancelled. Your money is safe - no charges have been made.');
+                        },
+                        confirm_close: true,
+                        escape: false
+                    },
+                    retry: {
+                        enabled: true,
+                        max_count: 3
+                    }
+                };
+
+                const razorpay = new Razorpay(razorpayOptions);
+                
+                // Enhanced error handling for live mode
+                razorpay.on('payment.failed', function (response) {
+                    console.error('💥 LIVE Payment failed:', response.error);
+                    showError(`Live payment failed: ${response.error.description || 'Please try again'}`);
+                });
+
+                razorpay.open();
+
+            } catch (error) {
+                console.error('❌ Error in live mode payment:', error);
+                showError(`Failed to initialize live payment: ${error.message}`);
+                showLoading(false);
+            }
+        };
+
+        // LIVE Payment Verification
+        async function verifyPayment(paymentResponse, planName, price, duration) {
+            showLoading(true);
+            
+            console.log('🔍 LIVE PAYMENT VERIFICATION:', {
+                payment_id: paymentResponse.razorpay_payment_id,
+                order_id: paymentResponse.razorpay_order_id
+            });
+
+            try {
+                const verifyResponse = await fetch(`${BACKEND_URL}/api/verify-payment`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${await currentUser.getIdToken()}`
+                    },
+                    body: JSON.stringify({
+                        razorpay_order_id: paymentResponse.razorpay_order_id,
+                        razorpay_payment_id: paymentResponse.razorpay_payment_id,
+                        razorpay_signature: paymentResponse.razorpay_signature,
+                        planName: planName,
+                        amount: price,
+                        duration: duration,
+                        userId: currentUser.uid
+                    })
+                });
+
+                if (!verifyResponse.ok) {
+                    const errorData = await verifyResponse.json();
+                    console.error('❌ LIVE Payment verification failed:', errorData);
+                    throw new Error(`Payment verification failed: ${errorData.error || 'Unknown error'}`);
+                }
+
+                const verifyData = await verifyResponse.json();
+
+                if (verifyData.success) {
+                    console.log('🎉 LIVE PAYMENT VERIFIED SUCCESSFULLY!');
+                    
+                    // Update Firebase with live payment data
+                    await setDoc(doc(db, 'users', currentUser.uid), {
+                        email: currentUser.email,
+                        fullName: currentUser.displayName || currentUser.email.split('@')[0],
+                        hasSubscription: true,
+                        planName: planName,
+                        planPrice: price,
+                        duration: duration,
+                        paymentId: paymentResponse.razorpay_payment_id,
+                        orderId: paymentResponse.razorpay_order_id,
+                        subscribedAt: new Date().toISOString(),
+                        expiresAt: duration === 'lifetime' 
+                            ? null 
+                            : new Date(Date.now() + (12 * 30 * 24 * 60 * 60 * 1000)).toISOString(),
+                        paymentMode: 'LIVE',
+                        environment: 'production'
+                    }, { merge: true });
+
+                    console.log('✅ Firebase updated with LIVE payment data');
+
+                    // Send invoice email
+                    try {
+                        const userData = {
+                            email: currentUser.email,
+                            fullName: currentUser.displayName || currentUser.email.split('@')[0],
+                            userId: currentUser.uid
+                        };
+
+                        const paymentData = {
+                            planName: planName,
+                            amount: price,
+                            duration: duration,
+                            razorpay_payment_id: paymentResponse.razorpay_payment_id,
+                            razorpay_order_id: paymentResponse.razorpay_order_id
+                        };
+
+                        const emailSent = await sendInvoiceEmail(userData, paymentData);
+                        
+                        if (emailSent) {
+                            showPaymentSuccess('🎉 LIVE PAYMENT SUCCESSFUL! Invoice sent to your email. Redirecting...');
+                        } else {
+                            showPaymentSuccess('🎉 LIVE PAYMENT SUCCESSFUL! Redirecting... (Email notification may be delayed)');
+                        }
+                    } catch (invoiceError) {
+                        console.error('Invoice email error:', invoiceError);
+                        showPaymentSuccess('🎉 LIVE PAYMENT SUCCESSFUL! Redirecting...');
+                    }
+
+                    // Redirect to invoice dashboard
+                    setTimeout(() => {
+                        console.log('🚀 Redirecting to invoice dashboard...');
+                        window.location.href = 'invoice.html';
+                    }, 3000);
+
+                } else {
+                    throw new Error('Payment verification failed on server');
+                }
+
+            } catch (error) {
+                console.error('❌ Live payment verification error:', error);
+                showError(`LIVE Payment verification failed: ${error.message}. If amount was deducted, please contact support immediately with payment ID: ${paymentResponse.razorpay_payment_id}`);
+            }
+
+            showLoading(false);
+        }
+
+        // Send Invoice Email
+        async function sendInvoiceEmail(userData, paymentData) {
+            try {
+                const templateParams = {
+                    to_email: userData.email,
+                    customer_name: userData.fullName || userData.email.split('@')[0],
+                    invoice_number: `INV-LIVE-${paymentData.razorpay_payment_id}`,
+                    plan_name: paymentData.planName,
+                    amount: paymentData.amount,
+                    duration: paymentData.duration === 'lifetime' ? 'Lifetime' : `${paymentData.duration} months`,
+                    payment_id: paymentData.razorpay_payment_id,
+                    invoice_date: new Date().toLocaleDateString('en-IN'),
+                    payment_mode: 'LIVE'
+                };
+
+                console.log('📧 Sending LIVE invoice email with params:', templateParams);
+
+                const response = await emailjs.send(
+                    EMAILJS_SERVICE_ID,
+                    EMAILJS_TEMPLATE_ID,
+                    templateParams
+                );
+
+                console.log('✅ LIVE Invoice email sent successfully:', response);
+                return true;
+            } catch (error) {
+                console.error('❌ Failed to send LIVE invoice email:', error);
+                return false;
+            }
+        }
+
+        // Utility functions
+        function showError(message) {
+            errorMsg.textContent = message;
+            errorMsg.style.display = 'block';
+            successMsg.style.display = 'none';
+        }
+
+        function showSuccess(message) {
+            successMsg.innerHTML = message;
+            successMsg.style.display = 'block';
+            errorMsg.style.display = 'none';
+        }
+
+        function showPaymentSuccess(message) {
+            successMsg.innerHTML = message +
+                '<br><br><button onclick="redirectToInvoice()" style="margin-top: 15px; padding: 12px 24px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Continue to Invoice Dashboard →</button>';
+            successMsg.style.display = 'block';
+            errorMsg.style.display = 'none';
+        }
+
+        function clearMessages() {
+            errorMsg.style.display = 'none';
+            successMsg.style.display = 'none';
+        }
+
+        function showLoading(show) {
+            loading.style.display = show ? 'block' : 'none';
+        }
+
+        function showLogin() {
+            authContainer.style.display = 'block';
+            subscriptionContainer.style.display = 'none';
+        }
+
+        window.showSubscriptions = function() {
+            authContainer.style.display = 'none';
+            subscriptionContainer.style.display = 'block';
+        }
+
+        window.showLogin = showLogin;
+        window.toggleAuthMode = toggleAuthMode;
+
+        window.redirectToInvoice = function() {
+            if (currentUser) {
+                getDoc(doc(db, 'users', currentUser.uid)).then(userDoc => {
+                    if (userDoc.exists()) {
+                        const userData = userDoc.data();
+                        if (userData.hasSubscription && userData.paymentId) {
+                            console.log('✅ Valid LIVE subscription found, redirecting...');
+                            window.location.href = 'invoice.html';
+                        } else {
+                            showError('No valid subscription found. Please complete payment first.');
+                            showSubscriptions();
+                        }
+                    } else {
+                        showError('User data not found. Please try again.');
+                        showSubscriptions();
+                    }
+                }).catch(error => {
+                    console.error('Error checking subscription:', error);
+                    showError('Error verifying subscription. Please try again.');
+                });
+            } else {
+                showError('Please login first');
+                showLogin();
+            }
+        };
+
+        window.logout = async function() {
+            try {
+                await signOut(auth);
+                currentUser = null;
+                showLogin();
+                // Clear any cached data
+                if (typeof Storage !== "undefined") {
+                    localStorage.clear();
+                    sessionStorage.clear();
+                }
+            } catch (error) {
+                showError('Logout failed');
+            }
+        };
+
+        // Event listeners
+        toggleAuth.addEventListener('click', toggleAuthMode);
+
+        // Test backend connection on load
+        fetch(`${BACKEND_URL}/api/test-live`)
+            .then(response => response.json())
+            .then(data => {
+                console.log('🔴 Backend connection test:', data);
+            })
+            .catch(error => {
+                console.error('⚠️ Backend connection failed:', error);
+            });
+
+    </script>
 </body>
-</html>
+</htm
