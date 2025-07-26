@@ -424,7 +424,7 @@
 
         // ⚡ LIVE MODE CONFIGURATION ⚡
         const RAZORPAY_KEY_ID = 'rzp_live_nkszfAsN6gyszW'; // Your LIVE key
-        const BACKEND_URL = 'https://hackeitbro.github.io/Invoice'; // Your backend URL
+        const BACKEND_URL = 'https://invoice-production-b970.up.railway.app'; // Fixed: Added https://
 
         console.log('🔴 LIVE MODE INITIALIZED');
         console.log('💳 Razorpay Live Key:', RAZORPAY_KEY_ID);
@@ -667,12 +667,16 @@
             console.log('🔴 LIVE PAYMENT: Initiating payment for', { planName, price, duration });
 
             try {
+                // Get current user's ID token
+                const idToken = await currentUser.getIdToken();
+                console.log('🔑 Got ID token for user:', currentUser.uid);
+
                 // Step 1: Create order on backend
                 const orderResponse = await fetch(`${BACKEND_URL}/api/create-subscription-order`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${await currentUser.getIdToken()}`
+                        'Authorization': `Bearer ${idToken}`
                     },
                     body: JSON.stringify({
                         planName: planName,
@@ -683,13 +687,29 @@
                     })
                 });
 
+                console.log('📡 Order response status:', orderResponse.status);
+                console.log('📡 Order response headers:', Object.fromEntries(orderResponse.headers.entries()));
+
                 if (!orderResponse.ok) {
-                    const errorData = await orderResponse.json();
-                    console.error('❌ Order creation failed:', errorData);
-                    throw new Error(`Failed to create order: ${errorData.error || 'Unknown error'}`);
+                    const errorText = await orderResponse.text();
+                    console.error('❌ Order creation failed:', {
+                        status: orderResponse.status,
+                        statusText: orderResponse.statusText,
+                        body: errorText
+                    });
+                    throw new Error(`Failed to create order: ${orderResponse.status} ${orderResponse.statusText}`);
                 }
 
-                const orderData = await orderResponse.json();
+                let orderData;
+                try {
+                    orderData = await orderResponse.json();
+                } catch (jsonError) {
+                    console.error('❌ Failed to parse order response as JSON:', jsonError);
+                    const responseText = await orderResponse.text();
+                    console.error('❌ Raw response:', responseText);
+                    throw new Error('Invalid response from server');
+                }
+
                 console.log('✅ LIVE Order created:', orderData.orderId);
                 showLoading(false);
 
@@ -761,11 +781,13 @@
             });
 
             try {
+                const idToken = await currentUser.getIdToken();
+                
                 const verifyResponse = await fetch(`${BACKEND_URL}/api/verify-payment`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${await currentUser.getIdToken()}`
+                        'Authorization': `Bearer ${idToken}`
                     },
                     body: JSON.stringify({
                         razorpay_order_id: paymentResponse.razorpay_order_id,
@@ -779,9 +801,13 @@
                 });
 
                 if (!verifyResponse.ok) {
-                    const errorData = await verifyResponse.json();
-                    console.error('❌ LIVE Payment verification failed:', errorData);
-                    throw new Error(`Payment verification failed: ${errorData.error || 'Unknown error'}`);
+                    const errorText = await verifyResponse.text();
+                    console.error('❌ LIVE Payment verification failed:', {
+                        status: verifyResponse.status,
+                        statusText: verifyResponse.statusText,
+                        body: errorText
+                    });
+                    throw new Error(`Payment verification failed: ${verifyResponse.status} ${verifyResponse.statusText}`);
                 }
 
                 const verifyData = await verifyResponse.json();
@@ -972,16 +998,40 @@
         // Event listeners
         toggleAuth.addEventListener('click', toggleAuthMode);
 
-        // Test backend connection on load
-        fetch(`${BACKEND_URL}/api/test-live`)
-            .then(response => response.json())
-            .then(data => {
-                console.log('🔴 Backend connection test:', data);
-            })
-            .catch(error => {
-                console.error('⚠️ Backend connection failed:', error);
-            });
+        // Test backend connection on load with better error handling
+        async function testBackendConnection() {
+            try {
+                console.log('🔍 Testing backend connection...');
+                const response = await fetch(`${BACKEND_URL}/api/test-live`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                console.log('📡 Backend test response status:', response.status);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('🔴 Backend connection test successful:', data);
+                } else {
+                    const errorText = await response.text();
+                    console.error('⚠️ Backend connection failed:', {
+                        status: response.status,
+                        statusText: response.statusText,
+                        body: errorText
+                    });
+                }
+            } catch (error) {
+                console.error('⚠️ Backend connection test failed:', error);
+                console.error('Make sure your backend is running and accessible at:', BACKEND_URL);
+            }
+        }
+
+        // Test connection when page loads
+        testBackendConnection();
 
     </script>
 </body>
-</htm
+</html>
